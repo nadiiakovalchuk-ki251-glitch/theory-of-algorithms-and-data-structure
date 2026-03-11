@@ -1,0 +1,46 @@
+#include <iostream>
+#include <Windows.h>
+using namespace std;
+
+int main() {
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(65001);
+
+    double readData(string message);
+    double y(double x, int n);
+
+    double start = readData("Початок інтервалу: ");
+    double end = readData("Кінець інтервалу: ");
+    double step = readData("Крок: ");
+    int n = readData("Число n: ");
+
+    for (double x = start; x <= end; x += step) {
+        cout << "x = " << x << ". y = " << y(x, n) << endl;
+    }
+}
+
+double readData(string message) {
+    double num;
+    cout << message;
+    cin >> num;
+    return num;
+}
+
+double y(double x, int n) {
+    if (x < 0) {
+        double y = 0.0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                y += (1.0 / (x - i - j));
+            }
+        }
+        return y;
+    }
+    else {
+        double y = 1.0;
+        for (int i = 0; i <= n - 3; i++) {
+            y = y * (-x - i);
+        }
+        return y;
+    }
+}
