@@ -1,0 +1,90 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <windows.h>
+
+#define N 10
+#define SIZE ((10 * N) % 51) 
+
+using namespace std;
+
+void printStep(int a[], int n, int sorted_idx) {
+    cout << "(";
+    for (int i = 0; i < n; i++) {
+        cout << a[i];
+        if (i == sorted_idx && i != n - 1) cout << "; ";
+        else if (i != n - 1) cout << ", ";
+    }
+    cout << ")" << endl;
+}
+
+void order_select(int a[], int n) {
+    int i, j, num, min, t;
+    for (i = 0; i < n - 1; i++) {
+        t = 0; num = i; min = a[i];
+        for (j = i + 1; j < n; j++) {
+            if (a[j] < min) {
+                num = j; min = a[j]; t = 1;
+            }
+        }
+        if (t == 1) { a[num] = a[i]; a[i] = min; }
+        cout << i + 1 << "-й прохід:\t";
+        printStep(a, n, i);
+    }
+}
+
+void order_insert(int a[], int n) {
+    int i, j, x;
+    for (i = 1; i < n; i++) {
+        x = a[i]; j = i - 1;
+        while (j >= 0 && x < a[j]) {
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = x;
+        cout << i << "-й прохід:\t";
+        printStep(a, n, i);
+    }
+}
+
+void order_bubble(int a[], int n) {
+    int i, j, x;
+    for (i = 0; i < n - 1; i++) {
+        for (j = n - 1; j > i; j--) {
+            if (a[j] < a[j - 1]) {
+                x = a[j - 1]; a[j - 1] = a[j]; a[j] = x;
+            }
+        }
+        cout << i + 1 << "-й прохід:\t";
+        printStep(a, n, i);
+    }
+}
+
+int main() {
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(65001);
+
+    int s[SIZE], temp[SIZE];
+    srand(time(NULL));
+
+    cout << "Вихідний масив: (";
+    for (int i = 0; i < SIZE; i++) {
+        s[i] = rand() % (400 + 1) - 200; 
+        cout << s[i] << (i == SIZE - 1 ? "" : ", ");
+    }
+    cout << ")" << endl << endl;
+
+    cout << "\nМетод вибору (select)" << endl;
+    for (int i = 0; i < SIZE; i++) temp[i] = s[i];
+    order_select(temp, SIZE);
+
+    cout << "\nМетод вставки (insert)" << endl;
+    for (int i = 0; i < SIZE; i++) temp[i] = s[i];
+    order_insert(temp, SIZE);
+
+    cout << "\nМетод «бульбашки» (booble)" << endl;
+    for (int i = 0; i < SIZE; i++) temp[i] = s[i];
+    order_bubble(temp, SIZE);
+
+    return 0;
+}
