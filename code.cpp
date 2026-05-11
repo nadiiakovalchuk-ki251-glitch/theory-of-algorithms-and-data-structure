@@ -1,0 +1,85 @@
+#include <iostream>
+#include <fstream>
+#include <cstdio>
+#include <Windows.h>
+
+using namespace std;
+
+double y(double x, int n) {
+    if (x < 0) {
+        double y = 0.0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                y += (1.0 / (x - i - j));
+            }
+        }
+        return y;
+    }
+    else {
+        double y = 1.0;
+        for (int i = 0; i <= n - 3; i++) {
+            y = y * (-x - i);
+        }
+        return y;
+    }
+}
+
+int main() {
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(65001);
+
+    ifstream fin("matrix.txt");
+    
+    int rows, cols;
+    fin >> rows >> cols;
+
+    int n;
+    printf("Введіть число n: ");
+    scanf("%d", &n);
+
+    double** arr1 = new double*[rows];
+    double** arr2 = new double*[rows];
+    for (int i = 0; i < rows; i++) {
+        *(arr1 + i) = new double[cols];
+        *(arr2 + i) = new double[cols];
+    }
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            fin >> *(*(arr1 + i) + j); 
+        }
+    }
+    fin.close();
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            *(*(arr2 + i) + j) = y(*(*(arr1 + i) + j), n);
+        }
+    }
+
+    printf("\nРезультати:\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%7.2f", *(*(arr2 + i) + j)); 
+        }
+        printf("\n");
+    }
+
+    ofstream fout("results.txt");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            fout << *(*(arr2 + i) + j) << "\t";
+        }
+        fout << "\n";
+    }
+    fout.close();
+
+    for (int i = 0; i < rows; i++) {
+        delete[] *(arr1 + i);
+        delete[] *(arr2 + i);
+    }
+    delete[] arr1;
+    delete[] arr2;
+
+    return 0;
+}
